@@ -1,0 +1,221 @@
+
+/*
+The OARN Relief Nursery Database
+Copyright (C) 2015  Oregon Association of Relief Nurseries
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+cite {
+    font-size: x-small;
+}
+
+label {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-style: normal;
+    font-size: 12px;
+    font-weight: bolder;
+    padding-right: 10px;
+    padding-left: 5px;
+}
+
+td > input {
+    padding: 3px 3px 3px 3px;
+}
+
+/* basic classes that affect most controls */
+.oarn-control {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px;
+}
+
+.oarn-popup-control {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px;
+    color: black !important;
+}
+
+.oarn-widget {
+    padding: 4px 4px 4px 4px;
+}
+
+.oarn-control[disabled="true"] {
+    color: black !important;
+}
+
+.oarn-new-row-header {
+    background-color: lightgray !important;
+    color: black !important;
+    text-transform: none !important;
+    font-style: italic !important;
+    font-weight: normal !important;
+}
+
+.oarn-table-control {
+    style: 'display: inline-block'
+}
+
+tr.oarn-table-row > td
+{
+    padding-bottom: 10px;
+}
+
+#ui-datepicker-div {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px;
+}
+
+.oarn-popup-title {
+    text-align: center;
+    text-decoration: underline;
+}
+
+.oarn-groupbox-column-header {
+    display: inline;
+    color: black;
+    font-style: italic;
+    font-size: smaller;
+}
+
+.oarn-groupbox-td-header {
+    color: black;
+    font-style: italic;
+    font-size: smaller;
+    text-align: center;
+}
+
+.oarn-groupbox-control {
+    color: black;
+    vertical-align: middle;
+}
+
+.oarn-summary-header {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-style: italic;
+    font-size: 12px;
+    font-weight: bolder;
+}
+
+.oarn-assessment-section-header {
+    font-size: smaller;
+    font-style: italic;
+    font-weight: lighter;
+}
+
+/* form validation */
+.oarn-invalid-input {
+    background-color: #f60000 !important;
+}
+
+.oarn-selected-row {
+    background-color: #aed8e6;
+}
+
+/* set the width and some basic styling for each panel */
+.oarn-primary-container-panels > * {
+    width: 320px;
+    background-color: #EAEAEA;
+    box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
+}
+
+/* on small devices, make each panel fit to the app width */
+@media all and (max-width: 800px) {
+    .oarn-primary-container-panels-panels > * {
+        min-width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* we use smaller icon buttons than the enyo default */
+.oarn-icon-button {
+    width: 24px !important;
+    height: 24px !important;
+}
+.oarn-icon-button.active {
+    background-position: 0 -24px !important;
+}
+
+.oarn-icon-button.pressed {
+    background-position: 0 -24px !important;
+}
+
+/* styles a groupbox header so that icon buttons fit  */
+.oarn-header {
+    height: 24px;
+    line-height: 24px;
+}
+
+
+.oarn-search-results {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px;
+    position: relative;
+
+    margin: 5px;
+    background-color:lightgray;  /*#4780db; #457dd6;*/
+    width: 90%;
+    padding: 5px 5px 5px 10px;
+    -webkit-border-radius: 42px;
+    -moz-border-radius: 42px;
+    border-radius: 42px;
+
+    -webkit-box-shadow: #383838 3px 3px 3px;
+    -moz-box-shadow: #383838 3px 3px 3px;
+    box-shadow: #383838 3px 3px 3px;"
+}
+
+.oarn-search-results.selected {
+    background-color: #aed8e6;
+}
+
+.oarn-selected {
+    background-color: #aed8e6;
+}
+
+.oarn-tooltip {
+    font-family: Tahoma, Geneva, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    text-transform: none !important;
+}
+
+.oarn-toolbar-button {
+    padding: 0px 5px 0px 5px;
+    margin: 0px 5px 0px 5px;
+    display: inline-block;
+}
+
+/* describes text indicating that no results were returned: */
+.oarn-no-results-text {
+    color: darkgray;
+    font-style: italic;
+}
+
+/* Toolbars */
+.oarn-deactivated-menu-item {
+    color: darkgray;
+    font-style: italic;
+}
+
+/* Bootstrap mods */
+.row.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+}
+.row.no-gutters > [class^="col-"],
+.row.no-gutters > [class*=" col-"] {
+    padding-right: 0;
+    padding-left: 0;
+}
+

@@ -1,0 +1,4 @@
+The license for several of the icons I used was free for commercial use, but does not allow redistribution.
+
+For the abstract 24x48 images here, the basic shape is indicated by the name. In each case, the image is a sprite with the unclicked version in the top half. 
+

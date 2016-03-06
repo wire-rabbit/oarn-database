@@ -1,0 +1,6 @@
+__pycache__/
+wsgi.py 
+settings.py
+settings-production.py
+settings-test.py
+debug.html

@@ -1,0 +1,11 @@
+__pycache__/
+*~
+*.pyc
+*.sqlite3
+venv
+.idea
+oarndb/migrations/
+ui/node_modules/
+.~lock*
+.DS_Store
+~*
