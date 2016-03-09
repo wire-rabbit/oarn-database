@@ -98,7 +98,7 @@
  		 */
 		published: {
 
-			version: '1.6.1',
+			version: '1.6.3',
 
 			/**
 			 * The authentication token retrieved from the back-end. The idea is for
@@ -704,7 +704,7 @@
 
             var msg = 'Version: ' + this.get('.version');
             enyo.log(msg);
-            enyo.log('Copyright 2015 - Oregon Association of Relief Nurseries');
+            enyo.log('Copyright 2015-2016 - Oregon Association of Relief Nurseries');
 
 			this.api = new oarn.API();
 		},
@@ -792,6 +792,13 @@
          * @private
          */
 		clearDetailsPanelControls: function () {
+			// It's possible that a helper within one of these controls has an uncleared 
+			// spinner timeout pending. We should clean those up now:
+			if (this.get('.spinnerDelay') != undefined) {
+					clearTimeout(this.spinnerDelay);
+					this.$.fullScreenSpinner.hide();
+			}
+
 			if ((this.$.familyDetails) && (this.$.familyDetails.hasNode())) {
 				this.$.familyDetails.destroy();
 			}
