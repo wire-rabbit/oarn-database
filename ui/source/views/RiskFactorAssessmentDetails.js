@@ -231,7 +231,7 @@
             if (this.get('.repeaterInitialized')) {
 
                 this.$.repeaterDisplay.staticPostFields = [
-                    {fieldName: 'family_id', value: this.get('.selectedFamilyID')}
+                    {fieldName: 'family', value: this.get('.selectedFamilyID')}
                 ];
 
                 this.$.repeaterDisplay.endpoint = 'api/v1/assessments/risk-factor-assessments/?family_id=' +
