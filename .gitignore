@@ -9,3 +9,4 @@ ui/node_modules/
 .~lock*
 .DS_Store
 ~*
+.swp
