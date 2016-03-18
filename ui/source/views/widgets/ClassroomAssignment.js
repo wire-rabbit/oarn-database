@@ -318,7 +318,6 @@
 
             var postBody = {};
             postBody['person'] = this.get('.selectedPersonID');
-            enyo.log('selectedPersonID:' + this.get('.selectedPersonID'));
 
             var beginDate = null;
             if (!Number.isNaN(this.$.beginDate.getValue())) {
