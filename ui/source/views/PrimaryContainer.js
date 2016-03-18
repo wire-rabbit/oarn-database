@@ -630,8 +630,6 @@
 			// Binding the currently selected person ID here and to child controls:
 			{from: '.selectedPersonID', to: '.$.foundFamilies.selectedPersonID'},
 			{from: '.selectedPersonItem', to: '.$.foundFamilies.selectedPersonItem'},
-
-            {from: '.selectedPersonID', to: '.$.childDetails.selectedPersonID'},
             {from: '.selectedPersonItem', to: '.$.childDetails.selectedPersonItem'},
 
 			{from: '.selectedAdultID', to: '.$.adultDetails.selectedPersonID'},
@@ -938,6 +936,7 @@
 			this.clearDetailsPanelControls();
 
 			this.set('.selectedAdultID', inEvent.id);
+			this.selectedPersonID = inEvent.id; // We don't use set because we don't want to trigger the associated code. 
 
 			if (inEvent.id != 0) {
 				this.$.mainTools.setToolbarState('adult')
