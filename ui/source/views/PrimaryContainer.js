@@ -936,7 +936,6 @@
 			this.clearDetailsPanelControls();
 
 			this.set('.selectedAdultID', inEvent.id);
-			this.selectedPersonID = inEvent.id; // We don't use set because we don't want to trigger the associated code. 
 
 			if (inEvent.id != 0) {
 				this.$.mainTools.setToolbarState('adult')
