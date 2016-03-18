@@ -98,7 +98,7 @@
  		 */
 		published: {
 
-			version: '1.6.3',
+			version: '1.6.4',
 
 			/**
 			 * The authentication token retrieved from the back-end. The idea is for
@@ -800,50 +800,98 @@
 			}
 
 			if ((this.$.familyDetails) && (this.$.familyDetails.hasNode())) {
+				var childControls = this.$.familyDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.familyDetails.destroy();
 			}
 
 			if ((this.$.adultDetails) && (this.$.adultDetails.hasNode())) {
+				var childControls = this.$.adultDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.adultDetails.destroy();
 			}
 
 			if ((this.$.childDetails) && (this.$.childDetails.hasNode())) {
+				var childControls = this.$.childDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.childDetails.destroy();
 			}
 
 			if ((this.$.enrollmentDetails) && (this.$.enrollmentDetails.hasNode())) {
+				var childControls = this.$.enrollmentDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.enrollmentDetails.destroy();
 			}
 
 			if ((this.$.homeVisitDetails) && (this.$.homeVisitDetails.hasNode())) {
+				var childControls = this.$.homeVisitDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.homeVisitDetails.destroy();
 			}
 
 			if ((this.$.contactLogDetails) && (this.$.contactLogDetails.hasNode())) {
+				var childControls = this.$.contactLogDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.contactLogDetails.destroy();
 			}
 
 			if ((this.$.familyAssessmentDetails) && (this.$.familyAssessmentDetails.hasNode())) {
+				var childControls = this.$.familyAssessmentDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.familyAssessmentDetails.destroy();
 			}
 
 			if ((this.$.riskFactorAssessmentDetails) && (this.$.riskFactorAssessmentDetails.hasNode())) {
+				var childControls = this.$.riskFactorAssessmentDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.riskFactorAssessmentDetails.destroy();
 			}
 
 			if ((this.$.childAssessmentDetails) && (this.$.childAssessmentDetails.hasNode())) {
+				var childControls = this.$.childAssessmentDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
 				this.$.childAssessmentDetails.destroy();
 			}
 
             if ((this.$.asqDetails) && (this.$.asqDetails.hasNode())) {
+            	var childControls = this.$.asqDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
                 this.$.asqDetails.destroy();
             }
 
             if ((this.$.asqseDetails) && (this.$.asqseDetails.hasNode())) {
+            	var childControls = this.$.asqseDetails.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
                 this.$.asqseDetails.destroy();
             }
 
             if ((this.$.waitlist) && (this.$.waitlist.hasNode())) {
+            	var childControls = this.$.waitlist.getControls();
+				for (var i = 0, ctrl; ctrl = childControls[i]; i++) {
+					ctrl.destroy()
+				};
                 this.$.waitlist.destroy();
             }
         },
