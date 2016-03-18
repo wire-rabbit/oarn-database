@@ -77,7 +77,8 @@
             'classroomRepeaterDisplay',
             'scheduleRepeaterDisplay',
             'detailsDisplay',
-            'attendance'
+            'attendance',
+            'classroomAssignment'
 		],
 
 		/**
