@@ -1154,10 +1154,6 @@ class AdultFamilyRelationshipSerializer(serializers.ModelSerializer):
             ).count() == 0:
                 raise PermissionDenied(detail='Write permissions are required for this family record.')
 
-            # We want only one link per person per family:
-            if AdultFamilyRelationship.objects.filter(family=family).filter(adult=adult).count() > 0:
-                raise ValidationError(detail="The supplied adult is already linked to this family")
-
             ref_adult_family_relationship_type = validated_data.get('ref_adult_family_relationship_type', None)
             if ref_adult_family_relationship_type:
                 if not ref_adult_family_relationship_type.universal:
@@ -1327,10 +1323,6 @@ class ChildFamilyRelationshipSerializer(serializers.ModelSerializer):
                             Organization.objects.get_read_orgs(request.user):
                         error_msg = "Read permissions are required for this relationship type selection."
                         raise PermissionDenied(detail=error_msg)
-
-            # We want only one link per person per family:
-            if ChildFamilyRelationship.objects.filter(family=family).filter(child=child).count() > 0:
-                raise ValidationError(detail="The supplied child is already linked to this family")
 
             return ChildFamilyRelationship.objects.create(
                 child=child,
