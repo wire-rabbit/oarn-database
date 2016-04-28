@@ -1136,6 +1136,7 @@
 			}
 
 			var postBody = {
+				family_address_id: pk,
 				family: family_id,
 				location_type: this.$.selectLocationType.getValue(),
 				street_number_and_name: this.$.txtStreetName.getValue(),
@@ -1143,7 +1144,7 @@
 				city: this.$.txtCity.getValue(),
 				state: this.$.selectState.getValue(),
 				postal_code: this.$.txtPostalCode.getValue(),
-				county: this.$.selectCounty.getValue(),
+				ref_county: this.$.selectCounty.getValue(),
 				residence_end_date: edate,
 				primary_address: this.$.chkPrimaryResidence.getValue(),
 				notes: this.$.txtNotes.getValue()

@@ -99,7 +99,7 @@
          */
         published: {
 
-            version: '1.6.5',
+            version: '1.6.7',
 
             /**
              * The authentication token retrieved from the back-end. The idea is for
@@ -290,6 +290,8 @@
 
             onClassroomManagerClosed: 'classroomManagerClosedHandler',
 
+            onUserManagerClosed: 'userManagerClosedHandler',
+
             onAttendanceClosed: 'attendanceClosedHandler',
 
             // Toolbar Menu Option Handlers:
@@ -399,6 +401,13 @@
                                     content: 'Attendance',
                                     classes: 'oarn-control',
                                     ontap: 'showAttendance'
+                                },
+                                {
+                                    name: 'btnManageUsers',
+                                    content: 'Manage Users',
+                                    classes: 'oarn-control',
+                                    ontap: 'manageUsers',
+                                    showing: false
                                 },
                                 {   name: 'menuActiveOrg',
                                     content: '', ontap: 'menuActiveOrgSelected',
@@ -1978,8 +1987,10 @@
         currentOrgAdminChanged: function (oldVal) {
             if (!this.get('.currentOrgAdmin')) {
                 this.$.btnManageClassrooms.hide();
+                this.$.btnManageUsers.hide();
             } else {
                 this.$.btnManageClassrooms.show();
+               // this.$.btnManageUsers.show();
             }
         },
 
@@ -2003,6 +2014,29 @@
         classroomManagerClosedHandler: function (inSender, inEvent) {
             if (this.$.classroomManager && this.$.classroomManager.hasNode()) {
                 this.$.classroomManager.destroy();
+            }
+        },
+
+        /**
+         * @private
+         * @param inSender
+         * @param inEvent
+         */
+        manageUsers: function (inSender, inEvent) {
+            this.createComponent({name: 'userManager', kind: 'oarn.UserManager'},
+                {owner: this});
+            this.$.userManager.render();
+            this.$.userManager.show();
+        },
+
+        /**
+         * @private
+         * @param inSender
+         * @param inEvent
+         */
+        userManagerClosedHandler: function (inSender, inEvent) {
+            if (this.$.userManager && this.$.userManager.hasNode()) {
+                this.$.userManager.destroy();
             }
         },
 
