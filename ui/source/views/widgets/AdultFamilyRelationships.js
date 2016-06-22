@@ -530,7 +530,9 @@
 					}
 				}
 
-				this.$.lblRelationshipType.setValue(this.relationship_type_options_list[option_index].display_text);
+                                if (this.relationship_type_options_list[option_index] !== undefined) {
+                               	    this.$.lblRelationshipType.setValue(this.relationship_type_options_list[option_index].display_text);
+                                }
 
 				this.$.lblBeginDate.setValue(details[index]['relationship_begin_date']);
 				this.$.lblEndDate.setValue(details[index]['relationship_end_date']);
