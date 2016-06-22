@@ -31,6 +31,11 @@ class RefAssessmentInterval(RefModel):
         primary_key=True
     )
 
+    interval_month = models.IntegerField(
+        'interval_month',
+        null=True
+    )
+
     class Meta:
         db_table = "ref_assessment_interval"
 
