@@ -61,7 +61,7 @@
 			onPopupClosed: 'popupClosedHandler',
 			onRowDeleted: 'rowDeletedHandler',
 			onDirtyStateChanged: 'dirtyStateChangedHandler',
-            onChangeAlert: 'changeAlertHandler'
+                        onChangeAlert: 'changeAlertHandler'
 		},
 
 		bindings: [
@@ -135,7 +135,7 @@
 					headerText: 'Assessment Interval',
 					labelText: 'Assessment Interval',
 					fieldWidth: 100,
-                    alertOnChange: true
+                                        alertOnChange: true
 				},
 				{
 					fieldName: 'employee',
@@ -310,7 +310,8 @@
                     required: false,
                     questionText: 'Date of report:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 4,
@@ -328,7 +329,8 @@
                     questionText: 'Episode 1: Start date:',
                     questionPosition: 'inline',
                     invalidText: 'Question 3, episode 1 start date',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 5,
@@ -338,7 +340,8 @@
                     questionText: 'End date:',
                     invalidText: 'Question 3, episode 1 end date',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 6,
@@ -347,7 +350,8 @@
                     required: false,
                     questionText: 'Episode 2: Start date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 6,
@@ -356,7 +360,8 @@
                     required: false,
                     questionText: 'End date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 7,
@@ -365,7 +370,8 @@
                     required: false,
                     questionText: 'Episode 3: Start date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 7,
@@ -374,7 +380,8 @@
                     required: false,
                     questionText: 'End date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 8,
@@ -383,7 +390,8 @@
                     questionText: 'Episode 4: Start date:',
                     questionStyle: 'font-size:smaller;width: 50%;',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 8,
@@ -392,7 +400,8 @@
                     questionStyle: 'font-size:smaller;width: 50%;',
                     questionText: 'End date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 9,
@@ -417,7 +426,8 @@
                     required: false,
                     questionText: 'Date of report:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 12,
@@ -443,7 +453,8 @@
                     required: false,
                     questionText: 'Episode 1: Start date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 14,
@@ -452,7 +463,8 @@
                     required: false,
                     questionText: 'End date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 15,
@@ -461,7 +473,8 @@
                     required: false,
                     questionText: 'Episode 2: Start date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 15,
@@ -470,7 +483,8 @@
                     required: false,
                     questionText: 'End date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 16,
@@ -479,7 +493,8 @@
                     required: false,
                     questionText: 'Episode 3: Start date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 16,
@@ -488,7 +503,8 @@
                     required: false,
                     questionText: 'End date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 17,
@@ -497,7 +513,8 @@
                     questionText: 'Episode 4: Start date:',
                     questionStyle: 'font-size:smaller;width: 50%;',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 17,
@@ -506,7 +523,8 @@
                     questionStyle: 'font-size:smaller;width: 50%;',
                     questionText: 'End date:',
                     questionPosition: 'inline',
-                    fieldType: 'date'
+                    fieldType: 'date',
+                    emptyIsValid: true
                 },
                 {
                     rowNumber: 18,
