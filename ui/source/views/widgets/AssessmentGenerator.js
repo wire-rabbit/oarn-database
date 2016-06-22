@@ -118,7 +118,7 @@
              * @default true
              * @public
              */
-			showTimeStampTooltip: true,
+	    showTimeStampTooltip: true,
 
             /**
              * A css value that sets the maximum width for the containing Groupbox.
@@ -127,7 +127,7 @@
              * @default '750px'
              * @public
              */
-			maxWidth: '750px',
+	    maxWidth: '750px',
 
             /**
              * The name of the primary key field for the assessment
@@ -748,9 +748,9 @@
                 var error = false;
                 var errorIndex = -1;
 
-				for (var j = 0; j < this.staticPostFields.length; j++) {
-					postBody[this.staticPostFields[j].fieldName] = this.staticPostFields[j].value;
-				}
+		for (var j = 0; j < this.staticPostFields.length; j++) {
+	    	    postBody[this.staticPostFields[j].fieldName] = this.staticPostFields[j].value;
+		}
 
                 for (var i = 0; i < this.questions.length; i++) {
                     if (this.questions[i].fieldType == 'text' || this.questions[i].fieldType == 'textarea') {
@@ -790,9 +790,9 @@
                                 this.$['date_' + this.questions[i].fieldName].getValue()).toISOString();
                             postDate = moment(testDate).format('YYYY-MM-DD');
                         }
-                        else if (this.$['date_' + this.questions[i].fieldName].getValue() !== null) {
-                            this.$.popupFactory.showInfo('Invalid Date',
-                                this.questions[errorIndex].invalidText + ' is not a valid date.');
+                        else if (this.$['date_' + this.questions[i].fieldName].getValue() !== null && 
+                                 this.$['date_' + this.questions[i].fieldName].getValue() !== '') {
+                            this.$.popupFactory.showInfo('Invalid Date', this.questions[errorIndex].invalidText + ' is not a valid date.');
                             return;
                         }
                         if (postDate == null && this.questions[i].required) {
@@ -807,9 +807,7 @@
                     }
                 }
 
-                if (inEvent != undefined &&
-                    inEvent.originator.name == 'saveButton' &&
-                    error) {
+                if (inEvent != undefined && inEvent.originator.name == 'saveButton' && error) {
                     this.$.popupFactory.showInfo('Required Field Missing',
                         this.questions[errorIndex].requiredText + ' is required');
                     return;
