@@ -99,7 +99,7 @@
          */
         published: {
 
-            version: '1.6.7',
+            version: '1.6.8',
 
             /**
              * The authentication token retrieved from the back-end. The idea is for
