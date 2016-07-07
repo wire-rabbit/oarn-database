@@ -27,6 +27,6 @@ urlpatterns = patterns(
     url(r'^support/$', main_views.support),
     url(r'^license/$', main_views.license),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^auth/', include('djoser.urls')),
+    url(r'^auth/', include('djoser.urls.authtoken')),
     url(r'^api/v1/', include('oarndb.urls')),
 )
