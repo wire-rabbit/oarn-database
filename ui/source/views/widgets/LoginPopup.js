@@ -208,17 +208,25 @@
 		processLoginError: function (inSender, inResponse) {
 			if (inSender.xhrResponse.status === 400) {
 				var err = JSON.parse(inSender.xhrResponse.body);
+                                this.ajaxerr = err;
 				if (err.username !=null) {
 					this.set('$.lblLoginResult.content', err.username);
 				}
-				if (err.password != null) {
+				else if (err.password != null) {
 					this.set('$.lblLoginResult.content', err.password);
 				}
-				if (err.non_field_errors != null) {
-					this.set('$.lblLoginResult.content', err.non_field_errors);
-				}
+                                else if (err.non_field_errors != null) {
+                                    this.set('$.lblLoginResult.content', err.non_field_errors);
+                                }
+                                else {
+                                    this.set('$.lblLoginResult.content', 'Unknown Error');
+                                }
 			}
-		}
+                        else if (inSender.xhrResponse.status === 429) {
+                            this.set('$.lblLoginResult.content', 'Too many attempts. Please wait one minute.');
+                        }
+                        
+    		}
 	});
 
 })(enyo, this);
