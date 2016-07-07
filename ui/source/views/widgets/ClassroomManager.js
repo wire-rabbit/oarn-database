@@ -273,7 +273,7 @@
 
         rowDeletedHandler: function (inSender, inEvent) {
             if (inEvent.originator.name == 'classroomRepeaterDisplay') {
-                if (inEvent.primaryKey == this.$.classRepeaterDisplay.staticPostFields[0].value) {
+                if (typeof this.$.classRepeaterDisplay.staticPostFields[0] !== 'undefined' && inEvent.primaryKey == this.$.classRepeaterDisplay.staticPostFields[0].value) {
                     this.$.classRepeaterDisplay.hide();
                 }
             }
