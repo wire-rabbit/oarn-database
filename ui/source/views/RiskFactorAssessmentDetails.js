@@ -248,8 +248,18 @@
             this.doRiskFactorAssessmentDirtyStateChanged({'dirty': this.get('.dirty')});
         },
 
-        selectedRiskFactorAssessmentIDChanged: function (inOld) {
+        selectedRiskFactorAssessmentIDChanged: function (inOld, inNew) {
+            this.$.riskFactorAssessmentQuestions.clearAssessment();
             this.$.riskFactorAssessmentQuestions.show();
+
+            var intervals = this.$.repeaterDisplay.$.selectHelper.optionsLists["intervals_options_list"];
+            var intakeID = -1;
+            for (var i = 0; i < intervals.length; i++) {
+                if (intervals[i].display_text == "Intake") {
+                    intakeID = intervals[i].value;
+                    break;
+                }
+            }
 
             this.$.riskFactorAssessmentQuestions.staticPostFields.push(
                 {'fieldName': 'family', 'value': this.get('.selectedFamilyID')}
@@ -257,7 +267,19 @@
             this.$.riskFactorAssessmentQuestions.endpointBase = 'api/v1/assessments/risk-factor-assessments/';
             this.$.riskFactorAssessmentQuestions.pkFieldName = 'risk_factor_assessment_id';
 
-
+            var isIntake = false;
+            var collection = this.$.repeaterDisplay.getCollection();
+            for (var i = 0; i < collection.length; i++) {
+                if (collection.at(i).get('risk_factor_assessment_id') == inNew) {
+                    if (collection.at(i).get('ref_assessment_interval') == intakeID) {
+                        isIntake = true;
+                    }
+                    else {
+                        isIntake = false;
+                    }
+                }
+            }
+            
             /**
              * An array of objects with these fields:
              * - rowNumber
@@ -580,120 +602,125 @@
                     fieldType: 'text',
                     inputStyle: 'width: 125px',
                     maxLength: 50
-                },
-                // Section 7:
-                {
-                    fieldName: 'historical',
-                    rowNumber: 700,
-                    fieldType: 'none',
-                    questionText: '7) Historical Risk Factors',
-                    questionPosition: 'questionOnly',
-                    questionClasses: 'oarn-assessment-section-header'
-                },
-                {
-                    rowNumber: 705,
-                    fieldName: 'q7a_incarceration',
-                    questionText: 'a) Incarceration or under criminal justice supervision',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 710,
-                    fieldName: 'q7b_partner_violence',
-                    questionText: 'b) Emotional, verbal, or physical intimate partner violence',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 715,
-                    fieldName: 'q7c_homelessness',
-                    questionText: 'c) Homelessness',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 720,
-                    fieldName: 'q7d_unemployed',
-                    questionText: 'd) Being under/unemployed',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 725,
-                    fieldName: 'q7e_limited_education',
-                    questionText: 'e) A history of limited education, less than high school diploma or GED',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 730,
-                    fieldName: 'q7f_unable_to_provide_food',
-                    questionText: 'f) Being unable to provide food to obtain adequate nutrition for every ' +
-                    'family member',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 735,
-                    fieldName: 'q7g_teen_parent',
-                    questionText: 'g) At least one parent that is a teen parent (17 years or younger at 1st birth)',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 740,
-                    fieldName: 'q7h_mental_health_problems',
-                    questionText: 'h) Mental health problems',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 745,
-                    fieldName: 'q7i_drug_affected',
-                    questionText: 'i) At least one adult in this family was raised by an alcoholic or drug' +
-                    ' affected person',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 750,
-                    fieldName: 'q7j_open_child_welfare_case',
-                    questionText: 'j) An adult in this family that has had an open child welfare case',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 755,
-                    fieldName: 'q7k_termination_of_parental_rights',
-                    questionText: 'k) An adult in this family has had at  least one child permanently removed ' +
-                    'from their care by a termination of parental rights (TPR)',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 760,
-                    fieldName: 'q7l_foster_care',
-                    questionText: 'l) A child that\'s been in foster care',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 765,
-                    fieldName: 'q7m_physical_abuse',
-                    questionText: 'm) At least one adult in this family was a victim of physical abuse or ' +
-                    'neglect as a child',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-                {
-                    rowNumber: 770,
-                    fieldName: 'q7n_sexual_abuse',
-                    questionText: 'n) At least one adult in this family was a victim of sexual abuse or' +
-                    ' incest as a child',
-                    questionPosition: 'inline',
-                    fieldType: 'checkbox'
-                },
-            ];
+                }];
+
+                if (isIntake) {
+                    this.$.riskFactorAssessmentQuestions.questions =
+                    this.$.riskFactorAssessmentQuestions.questions.concat([
+                        // Section 7:
+                        {
+                            fieldName: 'historical',
+                            rowNumber: 700,
+                            fieldType: 'none',
+                            questionText: '7) Historical Risk Factors',
+                            questionPosition: 'questionOnly',
+                            questionClasses: 'oarn-assessment-section-header'
+                        },
+                        {
+                            rowNumber: 705,
+                            fieldName: 'q7a_incarceration',
+                            questionText: 'a) Incarceration or under criminal justice supervision',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 710,
+                            fieldName: 'q7b_partner_violence',
+                            questionText: 'b) Emotional, verbal, or physical intimate partner violence',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 715,
+                            fieldName: 'q7c_homelessness',
+                            questionText: 'c) Homelessness',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 720,
+                            fieldName: 'q7d_unemployed',
+                            questionText: 'd) Being under/unemployed',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 725,
+                            fieldName: 'q7e_limited_education',
+                            questionText: 'e) A history of limited education, less than high school diploma or GED',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 730,
+                            fieldName: 'q7f_unable_to_provide_food',
+                            questionText: 'f) Being unable to provide food to obtain adequate nutrition for every ' +
+                            'family member',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 735,
+                            fieldName: 'q7g_teen_parent',
+                            questionText: 'g) At least one parent that is a teen parent (17 years or younger at 1st birth)',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 740,
+                            fieldName: 'q7h_mental_health_problems',
+                            questionText: 'h) Mental health problems',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 745,
+                            fieldName: 'q7i_drug_affected',
+                            questionText: 'i) At least one adult in this family was raised by an alcoholic or drug' +
+                            ' affected person',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 750,
+                            fieldName: 'q7j_open_child_welfare_case',
+                            questionText: 'j) An adult in this family that has had an open child welfare case',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 755,
+                            fieldName: 'q7k_termination_of_parental_rights',
+                            questionText: 'k) An adult in this family has had at  least one child permanently removed ' +
+                            'from their care by a termination of parental rights (TPR)',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 760,
+                            fieldName: 'q7l_foster_care',
+                            questionText: 'l) A child that\'s been in foster care',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 765,
+                            fieldName: 'q7m_physical_abuse',
+                            questionText: 'm) At least one adult in this family was a victim of physical abuse or ' +
+                            'neglect as a child',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        },
+                        {
+                            rowNumber: 770,
+                            fieldName: 'q7n_sexual_abuse',
+                            questionText: 'n) At least one adult in this family was a victim of sexual abuse or' +
+                            ' incest as a child',
+                            questionPosition: 'inline',
+                            fieldType: 'checkbox'
+                        }
+                    ]);
+                }
 
             this.$.riskFactorAssessmentQuestions.createAssessment();
         }
