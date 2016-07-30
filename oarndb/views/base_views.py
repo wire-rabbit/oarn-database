@@ -24,8 +24,7 @@ class ListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         """
-        Return a list of all RefAdultChildRelationshipType records that the
-        currently authenticated user has access to.
+        Return a list of all model records that the currently authenticated user has access to.
         """
         return self.serializer_class.Meta.model.objects.get_visible(self.request.user)
 
@@ -34,8 +33,7 @@ class RetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         """
-        Return a list of all RefAdultChildRelationshipType records that the
-        currently authenticated user has access to.
+        Return a list of all  records that the currently authenticated user has access to.
         """
         return self.serializer_class.Meta.model.objects.get_visible(self.request.user)
 
