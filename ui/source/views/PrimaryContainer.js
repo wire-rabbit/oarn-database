@@ -78,7 +78,8 @@
             'scheduleRepeaterDisplay',
             'detailsDisplay',
             'attendance',
-            'classroomAssignment'
+            'classroomAssignment',
+            'passwordChanger'
         ],
 
         /**
@@ -99,7 +100,7 @@
          */
         published: {
 
-            version: '1.7.0',
+            version: '1.8.0',
 
             /**
              * The authentication token retrieved from the back-end. The idea is for
@@ -294,6 +295,12 @@
 
             onAttendanceClosed: 'attendanceClosedHandler',
 
+            onPasswordChangerClosed: 'passwordChangerClosedHandler',
+
+            onLogout: 'logoutHandler',
+
+            onRefreshFamilyDetails: 'refreshFamilyDetailsHandler',
+
             // Toolbar Menu Option Handlers:
             onBtnFamilyDetailsClicked: 'btnFamilyDetailsClickedHandler',
 
@@ -379,10 +386,17 @@
                         kind: 'onyx.MenuDecorator',
                         classes: 'oarn-control',
                         onSelect: 'optionMenuItemSelected',
+                        name: 'optionsMenu',
                         components: [
                             {content: 'Options'},
                             {
-                                kind: 'onyx.Menu', components: [
+                                kind: 'onyx.Menu', maxHeight: 500, components: [
+                                {
+                                    name: 'btnChangePassword',
+                                    content: 'Change Password',
+                                    classes: 'oarn-control',
+                                    ontap: 'changePassword'
+                                },
                                 {
                                     name: 'btnCreateFamily',
                                     content: 'Create Family',
@@ -390,17 +404,17 @@
                                     ontap: 'createFamily'
                                 },
                                 {
+                                    name: 'btnAttendance',
+                                    content: 'Attendance',
+                                    classes: 'oarn-control',
+                                    ontap: 'showAttendance'
+                                },
+                                {
                                     name: 'btnManageClassrooms',
                                     content: 'Manage Classrooms',
                                     classes: 'oarn-control',
                                     ontap: 'manageClassrooms',
                                     showing: false
-                                },
-                                {
-                                    name: 'btnAttendance',
-                                    content: 'Attendance',
-                                    classes: 'oarn-control',
-                                    ontap: 'showAttendance'
                                 },
                                 {
                                     name: 'btnManageUsers',
@@ -542,6 +556,8 @@
             {from: '.token', to: '.$.waitlist.token'},
             {from: '.token', to: '.$.classroomManager.token'},
             {from: '.token', to: '.$.attendance.token'},
+            {from: '.token', to: '.$.userManager.token'},
+            {from: '.token', to: '.$.passwordChanger.token'},
 
             // Binding the username to controls that do timestamps, etc.:
             {from: '.username', to: '.$.familyDetails.username'},
@@ -554,6 +570,7 @@
             {from: '.username', to: '.$.asqDetails.username'},
             {from: '.username', to: '.$.asqseDetails.username'},
             {from: '.username', to: '.$.waitlist.username'},
+            {from: '.username', to: '.$.passwordChanger.username'},
 
             // Binding org details to data-aware child controls:
             {from: '.selectedOrganization', to: '.$.familyDetails.selectedOrganization'},
@@ -568,6 +585,7 @@
             {from: '.selectedOrganization', to: '.$.childRecordCreator.selectedOrganization'},
             {from: '.selectedOrganization', to: '.$.familyRecordCreator.selectedOrganization'},
             {from: '.selectedOrganization', to: '.$.classroomManager.selectedOrganization'},
+            {from: '.selectedOrganization', to: '.$.userManager.selectedOrganization'},
 
             {from: '.currentOrgReadOnly', to: '.$.familyRecordCreator.currentOrgReadOnly'},
             {from: '.currentOrgReadOnly', to: '.$.childRecordCreator.currentOrgReadOnly'},
@@ -625,6 +643,7 @@
             {from: '.selectedOrganization', to: '.$.childLinkCreator.selectedOrganization'},
             {from: '.selectedOrganization', to: '.$.adultRecordCreator.selectedOrganization'},
             {from: '.selectedOrganization', to: '.$.adultLinkCreator.selectedOrganization'},
+            {from: '.selectedOrganization', to: '.$.userManager.selectedOrganization'},
 
             {from: '.selectedOrganization', to: '.$.waitlist.selectedOrganization'},
             {from: '.currentOrgReadOnly', to: '.$.waitlist.currentOrgReadOnly'},
@@ -1021,6 +1040,8 @@
                     this.$.detailsDrawer.setOpen(true);
 
                     this.set('.selectedOrganization', null, true);
+
+                    this.checkForMandatoryPasswordChange();
                 }
             }
 
@@ -1990,7 +2011,7 @@
                 this.$.btnManageUsers.hide();
             } else {
                 this.$.btnManageClassrooms.show();
-               // this.$.btnManageUsers.show();
+                this.$.btnManageUsers.show();
             }
         },
 
@@ -2014,6 +2035,18 @@
         classroomManagerClosedHandler: function (inSender, inEvent) {
             if (this.$.classroomManager && this.$.classroomManager.hasNode()) {
                 this.$.classroomManager.destroy();
+            }
+        },
+
+
+        /**
+         * @private
+         * @param inSender
+         * @param inEvent
+         */
+        passwordChangerClosedHandler: function (inSender, inEvent) {
+            if (this.$.passwordChanger && this.$.passwordChanger.hasNode()) {
+                this.$.passwordChanger.destroy();
             }
         },
 
@@ -2061,6 +2094,116 @@
             if (this.$.attendance && this.$.attendance.hasNode()) {
                 this.$.attendance.destroy();
             }
+        },
+
+        /**
+         * @private
+         * @param inSender
+         * @param inEvent
+         *
+         */
+        changePassword: function (inSender, inEvent) {
+            this.createComponent({name: 'passwordChanger', kind: 'oarn.PasswordChanger'},
+                {owner: this});
+            this.$.passwordChanger.render();
+            this.$.passwordChanger.show();
+        },
+
+        /**
+         * @private
+         * @param inSender
+         * @param inEvent
+         *
+         */
+        logoutHandler: function(inSender, inEvent) {
+            this.set('token', ''); // force logout
+        },
+
+        /**
+         * @private
+         * @param inSender
+         * @param inEvent
+         *
+         */
+        checkForMandatoryPasswordChange: function(inSender, inEvent) {
+            this.set('.api.token', this.get('.token'));
+            this.set('.api.method', 'GET');
+            var endpoint = 'api/v1/users/me';
+            var ajax = this.api.getAjaxObject(endpoint);
+            ajax.go();
+            ajax.response(enyo.bindSafely(this, 'processPasswordCheckResponse'));
+            ajax.error(enyo.bindSafely(this, 'processPasswordCheckError'));
+        },
+
+        /**
+         * Responds to the Ajax call that checks for mandatory password resets
+         *
+         * @param inRequest
+         * @param inResponse
+         * @private
+         */
+        processPasswordCheckResponse: function (inRequest, inResponse) {
+            if (inResponse['must_change_password']) {
+                this.createComponent({name: 'passwordChanger', kind: 'oarn.PasswordChanger'},
+                    {owner: this});
+                this.$.passwordChanger.render();
+                this.$.passwordChanger.show();
+                this.$.passwordChanger.set('mandatory', true);
+            } 
+        },
+
+
+        /**
+         * Handles errors when the Ajax call checking for mandatory password resets fails
+         *
+         * @param inRequest
+         * @param inResponse
+         * @private
+         */
+        processPasswordCheckError: function (inSender, inResponse) {
+
+            var status = inSender.xhrResponse.status;
+            var detail = JSON.parse(inSender.xhrResponse.body);
+
+            var detail_msg = '';
+            for (var prop in detail) {
+                if (detail.hasOwnProperty(prop)) {
+                    detail_msg = prop + ': ' + detail[prop] + '<br>'; 
+                }
+            }
+
+            if (detail_msg.indexOf(":") > -1) {
+                detail_msg = detail_msg.split(":")[1]; // strip out "non_field_errors:" from error
+            }
+
+            this.$.popupFactory.showInfo('Error', 'A problem occurred while trying to ' +
+                ' check for mandatory password resets: ' +
+                '<br><br>' + detail_msg);
+
+            this.set('.xhrResponse', inSender.xhrResponse);
+            return true;
+        },
+
+        /**
+         This event redraws the details pane with the current family ID.
+        */
+        refreshFamilyDetailsHandler: function(inSender, inEvent) {
+            this.clearDetailsPanelControls();
+
+            if (this.get('.selectedFamilyID') != 0) {
+                this.$.mainTools.setToolbarState('family');
+
+                this.$.foundChildren.deselectAll();
+                this.$.foundAdults.deselectAll();
+
+                this.$.detailsDrawer.createComponent({name: 'familyDetails', kind: 'oarn.FamilyDetails'},
+                    {owner:this});
+                this.$.detailsDrawer.render();
+
+            } else {
+                this.$.mainTools.setToolbarState('none');
+            }
+            return true;
         }
     });
 

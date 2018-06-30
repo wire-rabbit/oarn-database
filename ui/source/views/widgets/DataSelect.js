@@ -111,6 +111,20 @@
 
 		selectedItemChanged: function (inOld) {
 			this.setSelected(this.get('.selectedItem'));
+		},
+
+		/**
+		 *  Enyo 2.5.1 suffers from a bug that prevents retrieval of the current value
+		 *  after it is programmatically set. It appears to be fixed in 2.6.0-pre.4, but
+		 *  lacking time to port the whole application, this function and the next will
+		 *  have to do. See: https://enyojs.atlassian.net/browse/ENYO-4132
+		 */
+		getSelectedItem: function () {
+			return $('#' + this.id).val();
+		},
+
+		setSelectedItem: function (val) {
+			$('#' + this.id).val(val);
 		}
 
 	});

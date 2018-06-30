@@ -210,7 +210,15 @@
 					last_name: children[i]['child']['person']['last_name'],
 					first_name: children[i]['child']['person']['first_name']
 				}
-				if (children_data.indexOf(detail) == -1) {
+				var already_present = false;
+				for (var x=0; x < children_data.length; x++) {
+					if (children_data[x].person_id == detail.person_id) {
+						already_present = true;
+						break;
+					}
+				}
+
+				if (!already_present) {
 					children_data.push(detail);
 				}
 			}

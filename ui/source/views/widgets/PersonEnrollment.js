@@ -118,7 +118,8 @@
                                 ]},
                                 {tag: 'td', components: [
                                     {name: 'new_selectFamilyMember', kind: 'oarn.DataSelect',
-                                        classes: 'oarn-control oarn-groupbox-control', style: 'width: 95%'}
+                                        classes: 'oarn-control oarn-groupbox-control', style: 'width: 95%'
+                                    }
                                 ]},
                             ]},
                             {tag: 'tr', components: [
@@ -362,7 +363,6 @@
 
             this.$.popupFactory.showSimple('New family member enrollment record created');
 
-            this.$.new_selectFamilyMember.setSelected(0);
             this.$.new_txtOpenDate.setValue(null);
             this.$.new_txtCloseDate.setValue(null);
 

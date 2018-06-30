@@ -505,7 +505,6 @@
 
 			var bdate = this.collection.at(inEvent.index).get('relationship_begin_date');
 			var edate = this.collection.at(inEvent.index).get('relationship_end_date');
-			enyo.log('edate: ' + edate);
 
 			if (!readonly) {
 				item.$.begin_date.setValue(bdate);
@@ -713,7 +712,6 @@
 		 * @returns {boolean}
 		 */
 		deleteError: function (inSender, inResponse) {
-			enyo.log('in delete error');
 			this.doAjaxFinished(); // let a parent control turn off a spinner, etc.
 
 			var status = inSender.xhrResponse.status;

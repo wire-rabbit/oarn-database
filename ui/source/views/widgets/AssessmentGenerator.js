@@ -118,7 +118,7 @@
              * @default true
              * @public
              */
-	    showTimeStampTooltip: true,
+	        showTimeStampTooltip: true,
 
             /**
              * A css value that sets the maximum width for the containing Groupbox.
@@ -127,7 +127,7 @@
              * @default '750px'
              * @public
              */
-	    maxWidth: '750px',
+	        maxWidth: '750px',
 
             /**
              * The name of the primary key field for the assessment
@@ -335,6 +335,17 @@
          */
         selectListsAcquiredHandler: function (inSender, inEvent) {
             this.drawAssessment();
+        },
+
+
+        /**
+         * @public
+         * Erases the table of assessment questions
+         */
+        clearAssessment: function() {
+            if (typeof this.$.tableBody !== 'undefined') {
+                this.$.tableBody.destroy();
+            }
         },
 
         /**

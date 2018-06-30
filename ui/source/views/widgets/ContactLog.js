@@ -55,6 +55,10 @@
             {name: 'popupFactory', kind: 'oarn.PopupFactory'}
         ],
 
+        bindings: [
+            {from: '.username', to: '.$.repeaterDisplay.username'}
+        ],
+
         /**
          * Wait for both the family ID and selectedOrganization to be set before building controls.
          *

@@ -55,6 +55,10 @@
             {method: 'isReady', path: ['selectedFamilyID', 'selectedOrganization']}
         ],
 
+        bindings: [
+            {from: '.username', to: '.$.repeaterDisplay.username'}
+        ],
+
         /**
          * Wait for both the family ID and selectedOrganization to be set before building controls.
          *
@@ -63,7 +67,6 @@
         isReady: function (previous, current, property) {
             if (this.get('selectedFamilyID') && (this.get('selectedOrganization') != null)) {
                 this.defineRepeaterDisplay();
-
             }
         },
 
@@ -152,7 +155,6 @@
             this.$.repeaterDisplay.createRepeater();
 
             this.set('.repeaterInitialized', true);
-
         },
     });
 

@@ -257,6 +257,14 @@
         loadSelectData: function () {
             this.set('.api.token', this.get('.token'));
             this.set('.api.method', 'GET');
+
+            // If we don't receive a valid ref_program_id, we need to hide the control and exit
+            var ref_program_id = this.get('.selectedProgramID');
+            if (typeof ref_program_id === 'undefined') {
+                this.$.mainDisplay.setShowing(false);
+                return;
+            }
+
             var endpoint = 'api/v1/ref/service-levels/?ref_program=' + this.get('.selectedProgramID');
             var ajax = this.api.getAjaxObject(endpoint);
             ajax.go();

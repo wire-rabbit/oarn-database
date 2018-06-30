@@ -40,11 +40,20 @@
             api: null,
 
             /**
+             * The current user's username, bound by the parent.
+             *
+             * @type {string}
+             * @public
+             */
+            username: 'unset',
+
+            /**
              * An array of objects described as follows, with the order in the array indicating left-to-right position:
              * {
              *      fieldName: [the database field name],
              *      fieldType: [DatePicker | DataSelect | TextBox | NumberSelect | SelectNotes],
              *      dataSelectName: [for DataSelect fieldType only, the name of the endpoint helper],
+             *      nested_id_name: optional - it's used when the endpoint returns a select value ID as an object with an ID field inside
              *      readOnly: [true|false],
              *      headerText: [text for the header row],
              *      labelText: [will be used in the new record popup],
@@ -64,6 +73,9 @@
             hasNotesSelectButton: false,
 
             allowsNewRecords: true,
+
+            deleteMessage: 'Clicking \'Yes\' will permanently delete this record and ' +
+                'cannot be undone. Continue anyway?',
 
             selectEndpoints: [], // endpoints for the SelectHelper,
             endpoint: '', // for GET requests
@@ -86,8 +98,21 @@
 
             showTimeStampTooltip: true,
 
-            maxWidth: 750 // the max-width pixels of the groupbox
+            maxWidth: 750, // the max-width pixels of the groupbox
+
+            /**
+             * Enyo's treatment of dropdowns in cases where a value is rolled back 
+             * is buggy in 2.5.1. In those cases, setting this to true will use
+             * custom DataSelect get/set methods when saving.
+             *
+             * @type {boolean}
+             * @default false
+             * @public 
+             */
+            altSelectSave: false // use custom DataSelect get/set methods rather than Enyo's
         },
+
+        saveJob: null, // the timer for the autosave action
 
         events: {
             onAjaxError: '',
@@ -97,7 +122,9 @@
             onRowSelected: '',
 			onRowDeleted: '',
             onChangeAlert: '',
-            onRepeaterRendered: ''
+            onRepeaterRendered: '',
+            onRepeaterDebug: '',
+            onNewRecordCreated: ''
         },
 
         handlers: {
@@ -107,7 +134,7 @@
 
         components: [
             {name: 'mainGroupbox', kind: 'onyx.Groupbox', components: [
-                {kind: 'onyx.GroupboxHeader', components: [
+                {kind: 'onyx.GroupboxHeader', name: 'header', components: [
                     {name: 'headerText', classes: 'oarn-header', tag:'span'},
                     {kind: 'onyx.TooltipDecorator',
                         style: 'display: inline; float:right', components: [
@@ -233,6 +260,11 @@
             }
             else {
                 this.$.repeater.setCount(this.collection.length);
+            }
+
+            if (this.refreshMode === 'newRecordCreated') {
+                this.refreshMode = ''; // reset the mode so that in other contexts new record events aren't triggered
+                this.doNewRecordCreated(); // trigger parent responses to new record creation.
             }
         },
 
@@ -419,6 +451,11 @@
                                 style: 'width: 95%',
                                 disabled: true,
                                 showing: false
+                            },
+                            {
+                                name: 'hidden_' + this.fields[i].fieldName,
+                                kind: 'enyo.Input',
+                                type: 'hidden'
                             }
                         ]
                     });
@@ -724,7 +761,7 @@
                     }
                 }
             }
-            else {
+            else { // read-write:
                 item.$.deleteButton.show();
                 for (var i = 0; i < this.fields.length; i++) {
                     if (this.fields[i].postBodyOnly) {
@@ -811,6 +848,9 @@
 
                             var item_index = 0;
                             var item_value = this.collection.at(inEvent.index).get(this.fields[i].fieldName);
+
+                            item.$['hidden_' + this.fields[i].fieldName].setValue(item_value);
+
                             for (var oi = 0; oi < options.length; oi++){
                                 if (options[oi]['value'] == item_value) {
                                     item_index = oi;
@@ -826,6 +866,10 @@
                             var options = this.$.selectHelper.optionsLists[this.fields[i].dataSelectName + '_options_list'];
                             var item_index = 0;
                             var item_value = this.collection.at(inEvent.index).get(this.fields[i].fieldName);
+
+                            if (typeof item_value === "object" && this.fields[i].nested_id_name !== undefined) {
+                                item_value = item_value[this.fields[i].nested_id_name];
+                            }
 
                             for (var oi = 0; oi < options.length; oi++){
                                 if (options[oi]['value'] == item_value) {
@@ -848,7 +892,7 @@
                 item.$.headerRow.hide();
             }
 
-            if (inEvent.index == this.collection.length) {
+            if (inEvent.index == (this.collection.length - 1)) {
                 this.doRepeaterRendered(); // alert parent that the repeater has finished being drawn.
             }
             return true;
@@ -888,7 +932,9 @@
                     if (this.fields[i].fieldName == inputFieldName && this.fields[i].alertOnChange) {
                         this.doChangeAlert({
                             model: this.collection.at(inEvent.index),
-                            fieldName: inputFieldName
+                            fieldName: inputFieldName,
+                            index: inEvent.index,
+                            control: inEvent.originator // So the handler can maniuplate the form field
                         });
                     }
                 }
@@ -932,10 +978,14 @@
             this.$.saveButton.setSrc('static/assets/save-small.png');
             this.saveJob = this.startJob('SaveInput', enyo.bindSafely(this, 'goSaveChanges'),
                 this.get('saveDelay'));
+
+            return true; // stop propagation of the event
         },
 
         goSaveChanges: function (inSender, inEvent) {
-
+            if (this.pauseSave === true) {
+                return; 
+            }
             if (this.get('.dirty')) {
                 if (this.changed_row_indices.length > 0 || this.notesDirty) {
                     if (this.changed_row_indices.indexOf(this.notesIndex) == -1 && this.notesIndex >= 0) {
@@ -963,95 +1013,101 @@
                         }
 
                         var item = this.$.repeater.itemAtIndex(this.changed_row_indices[i]);
+                        if (typeof item === 'undefined') {
+                            this.doRepeaterDebug({changed_row_index: i});
+                        }
 
-                        for (var j = 0; j < this.fields.length; j++) {
-                            if (this.fields[j].fieldType == 'TextBox' || this.fields[j].fieldType == 'NumberSelect') {
-                                if (this.fields[j].validator != undefined) {
-                                    if (!this.fields[j].validator(item.$['txt_' +
-                                        this.fields[j].fieldName].getValue())) {
-                                        item.$['txt_' + this.fields[j].fieldName].addClass('oarn-invalid-input');
-                                        return;
+                        if (item) {
+                            for (var j = 0; j < this.fields.length; j++) {
+                                if (this.fields[j].fieldType == 'TextBox' || this.fields[j].fieldType == 'NumberSelect') {
+                                    if (this.fields[j].validator != undefined) {
+                                        if (!this.fields[j].validator(item.$['txt_' +
+                                            this.fields[j].fieldName].getValue())) {
+                                            item.$['txt_' + this.fields[j].fieldName].addClass('oarn-invalid-input');
+                                            return;
+                                        }
+                                        else {
+                                            item.$['txt_' + this.fields[j].fieldName].removeClass('oarn-invalid-input');
+                                            postBody[this.fields[j].fieldName] = item.$['txt_' + this.fields[j].fieldName].getValue();
+                                        }
                                     }
                                     else {
-                                        item.$['txt_' + this.fields[j].fieldName].removeClass('oarn-invalid-input');
                                         postBody[this.fields[j].fieldName] = item.$['txt_' +
                                             this.fields[j].fieldName].getValue();
                                     }
-                                }
-                                else {
-                                    postBody[this.fields[j].fieldName] = item.$['txt_' +
-                                        this.fields[j].fieldName].getValue();
-                                }
 
-                            }
-                            else if (this.fields[j].fieldType == 'Checkbox') {
-                                postBody[this.fields[j].fieldName] =
-                                    item.$['chk_' + this.fields[j].fieldName].getChecked();
-                            }
-                            else if (this.fields[j].fieldType == 'DataSelect') {
-                                if (!this.fields[j].readOnly) {
-                                    postBody[this.fields[j].fieldName] =
-                                        item.$['select_' + this.fields[j].fieldName].getValue();
                                 }
-                                else {
-                                    var opList = this.$.selectHelper.optionsLists[this.fields[j].dataSelectName +
-                                        '_options_list'];
-                                    var itemVal = item.$['lbl_' + this.fields[j].fieldName].getValue();
-                                    for (var n=0; n < opList.length; n++) {
-                                        if (opList[n].display_text == itemVal) {
-                                            postBody[this.fields[j].fieldName] = opList[n].value;
+                                else if (this.fields[j].fieldType == 'Checkbox') {
+                                    postBody[this.fields[j].fieldName] =
+                                        item.$['chk_' + this.fields[j].fieldName].getChecked();
+                                }
+                                else if (this.fields[j].fieldType == 'DataSelect') {
+                                    if (!this.fields[j].readOnly) {
+                                        if (!this.altSelectSave) {
+                                            if (typeof item !== 'undefined') {
+                                                postBody[this.fields[j].fieldName] =
+                                                item.$['select_' + this.fields[j].fieldName].getValue();
+                                            } 
+                                        } else {
+                                            postBody[this.fields[j].fieldName] =
+                                                item.$['select_' + this.fields[j].fieldName].getSelectedItem();
                                         }
                                     }
+                                    else {
+                                        postBody[this.fields[j].fieldName] = item.$['hidden_' + this.fields[j].fieldName].getValue();
+                                    }
+                                }
+                                else if (this.fields[j].fieldType == 'DatePicker') {
+                                    var postDate = null;
+                                    if (!Number.isNaN(Date.parse(item.$['date_' + this.fields[j].fieldName].getValue()))) {
+                                        var testDate = new Date(
+                                            item.$['date_' + this.fields[j].fieldName].getValue()).toISOString();
+                                        postDate = moment(testDate).format('YYYY-MM-DD');
+                                    }
+                                    if (!this.fields[j].emptyIsValid && postDate == null) {
+                                        return;
+                                    }
+
+                                    postBody[this.fields[j].fieldName] = postDate;
+                                }
+                                else if (this.fields[j].postBodyOnly) {
+                                    if (typeof this.collection.at(this.changed_row_indices[i]) !== 'undefined') {
+                                        postBody[this.fields[j].fieldName] =
+                                        this.collection.at(this.changed_row_indices[i]).get(this.fields[j].fieldName);
+                                    } 
                                 }
                             }
-                            else if (this.fields[j].fieldType == 'DatePicker') {
-                                var postDate = null;
-                                if (!Number.isNaN(Date.parse(item.$['date_' + this.fields[j].fieldName].getValue()))) {
-                                    var testDate = new Date(
-                                        item.$['date_' + this.fields[j].fieldName].getValue()).toISOString();
-                                    postDate = moment(testDate).format('YYYY-MM-DD');
+
+                            for (var j = 0; j < this.staticPostFields.length; j++) {
+                                postBody[this.staticPostFields[j].fieldName] = this.staticPostFields[j].value;
+                            }
+
+                            var pkFieldName = '';
+                            for (var p = 0; p < this.fields.length; p++) {
+                                if (this.fields[p].primaryKey) {
+                                    pkFieldName = this.fields[p].fieldName;
                                 }
-                                if (!this.fields[j].emptyIsValid && postDate == null) {
-                                    return;
-                                }
-
-                                postBody[this.fields[j].fieldName] = postDate;
                             }
-                            else if (this.fields[j].postBodyOnly) {
-                                postBody[this.fields[j].fieldName] =
-                                    this.collection.at(this.changed_row_indices[i]).get(this.fields[j].fieldName);
-                            }
-                        }
 
-                        for (var j = 0; j < this.staticPostFields.length; j++) {
-                            postBody[this.staticPostFields[j].fieldName] = this.staticPostFields[j].value;
-                        }
+                            var pk = this.collection.at(this.changed_row_indices[i]).get(pkFieldName);
 
-                        var pkFieldName = '';
-                        for (var p = 0; p < this.fields.length; p++) {
-                            if (this.fields[p].primaryKey) {
-                                pkFieldName = this.fields[p].fieldName;
-                            }
-                        }
+                            this.set('.api.token', this.get('.token'));
+                            this.set('.api.method', 'PATCH');
+                            var endpoint = this.get('.patchEndpoint') + pk + '/';
+                            var ajax = this.api.getAjaxObject(endpoint);
+                            ajax.postBody = postBody;
+                            this.postBody = postBody;
 
+                            this.doAjaxStarted();
+                            ajax.go();
+                            ajax.response(enyo.bindSafely(this, 'patchResponse'));
+                            ajax.error(enyo.bindSafely(this, 'processError'));
 
-                        var pk = this.collection.at(this.changed_row_indices[i]).get(pkFieldName);
-
-                        this.set('.api.token', this.get('.token'));
-                        this.set('.api.method', 'PATCH');
-                        var endpoint = this.get('.patchEndpoint') + pk + '/';
-                        var ajax = this.api.getAjaxObject(endpoint);
-                        ajax.postBody = postBody;
-                        this.postBody = postBody;
-
-                        this.doAjaxStarted();
-                        ajax.go();
-                        ajax.response(enyo.bindSafely(this, 'patchResponse'));
-                        ajax.error(enyo.bindSafely(this, 'processError'));
-
+                        } // end for loop
                     }
                 }
             }
+            return true; // stop propagation of the event.
         },
 
         patchResponse: function (inRequest, inResponse) {
@@ -1059,6 +1115,7 @@
 
             this.set('.dirty', false);
             this.set('.notesDirty', false);
+            this.changed_row_indices = [];
 
             if (this.notesScratchPad != null) {
                 this.collection.at(this.notesScratchPad.index).set(
@@ -1310,16 +1367,15 @@
                 }
             }
 
+            this.refreshMode = 'newRecordCreated';
             this.refreshData();
         },
 
         goDelete: function (inSender, inEvent) {
-            var msg = 'Clicking \'Yes\' will permanently delete this record and ' +
-                'cannot be undone. Continue anyway?';
 
             this.set('.currentIndex', inEvent.index);
             this.set('confirmPopupMode', 'confirmDelete');
-            this.$.popupFactory.showConfirm('Confirm Delete', msg);
+            this.$.popupFactory.showConfirm('Confirm Delete', this.deleteMessage);
 
             // get primary key value:
             var pk = -1;
@@ -1410,15 +1466,28 @@
             // Set the autosave job in motion:
             this.lastChanged = new Date();
             this.$.saveButton.setSrc('static/assets/save-small.png');
-            this.saveJob = this.startJob('SaveInput', enyo.bindSafely(this, 'goSaveChanges'),
+            this.startJob('SaveInput', enyo.bindSafely(this, 'goSaveChanges'),
                 this.get('saveDelay'));
         },
 
-        frozenCheckboxChanged: function (inSender, inEvent) {
+        frozenCheckboxChanged: function(inSender, inEvent) {
             inSender.setChecked(
                 !inSender.getChecked()
             );
+        },
+
+        pauseSaveTimer: function() {
+            this.pauseSave = true;
+        },
+
+        startSaveTimer: function() {
+            this.pauseSave = false;
+            if (this.dirty) {
+                this.saveJob = this.startJob('SaveInput', enyo.bindSafely(this, 'goSaveChanges'),
+                this.get('saveDelay'));
+            }
         }
+
     });
 
 })(enyo, this);

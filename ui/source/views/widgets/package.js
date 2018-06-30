@@ -61,5 +61,10 @@ enyo.depends(
     "ClassroomAssignment.js",
     "Attendance.js",
     "HomeVisits.js",
-    "ContactLog.js"
+    "ContactLog.js",
+    "UserManager.js",
+    "PasswordChanger.js",
+    "FamilyEnrollmentRD.js",
+    "PersonEnrollmentRD.js",
+    "ServiceLevelEnrollmentRD.js"
 );

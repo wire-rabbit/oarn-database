@@ -213,7 +213,16 @@
 					last_name: adults[i]['adult']['person']['last_name'],
 					first_name: adults[i]['adult']['person']['first_name']
 				}
-				if (adults_data.indexOf(detail) == -1) {
+
+				var already_present = false;
+				for (var x=0; x < adults_data.length; x++) {
+					if (adults_data[x].person_id == detail.person_id) {
+						already_present = true;
+						break;
+					}
+				}
+
+				if (!already_present) {
 					adults_data.push(detail);
 				}
 			}

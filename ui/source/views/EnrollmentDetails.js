@@ -49,18 +49,17 @@
 			{classes: 'container', style:'max-width:750px; margin-left: 5px;', components: [
 				{classes: 'row', components: [
 					{classes: 'col-sm-12 col-md-12', style: 'padding: 2px 2px 2px 2px;', components:[
-						{name: 'familyPrograms', kind: 'oarn.FamilyPrograms', style: 'padding: 5px 5px 5px 5px'}
+						{name: 'familyPrograms', kind: 'oarn.FamilyEnrollmentRD', style: 'padding: 5px;'}
 					]},
 				]},
 				{classes: 'row', components: [
 					{classes: 'col-sm-12 col-md-12', style: 'padding: 2px 2px 2px 2px;', components:[
-						{name: 'serviceLevelEnrollment', kind: 'oarn.ServiceLevelEnrollment',
-							style: 'padding: 5px 5px 5px 5px'}
+						{name: 'serviceLevelEnrollment', kind: 'oarn.ServiceLevelEnrollmentRD', style: 'padding: 5px;'}
 					]},
 				]},
 				{classes: 'row', components: [
 					{classes: 'col-sm-12 col-md-12', style: 'padding: 2px 2px 2px 2px;', components:[
-						{name: 'personEnrollment', kind: 'oarn.PersonEnrollment', style: 'padding: 5px 5px 5px 5px'}
+						{name: 'personEnrollment', kind: 'oarn.PersonEnrollmentRD', style: 'padding: 5px;'}
 					]},
 				]}
 			]}
@@ -94,7 +93,7 @@
 			{from: '.selectedFamilyEnrollmentID', to: '.$.personEnrollment.selectedFamilyEnrollmentID'},
 			{from: '.selectedFamilyEnrollmentID', to: '.$.serviceLevelEnrollment.selectedFamilyEnrollmentID'},
 
-			{from: '.selectedProgramID', to: '.$.serviceLevelEnrollment.selectedProgramID'},
+			{from: '.selectedProgramID', to: '.$.serviceLevelEnrollment.selectedProgramID'}
 		]
 	})
 
