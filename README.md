@@ -20,4 +20,4 @@ All database requests are sent to a [Django Rest Framework](http://www.django-re
 # Deployment
 Enyo should be placed in the UI folder. Then, rather than using the standard Enyo deployment script, run oarndeploy.sh. This script includes the usual deployment steps, but also copies the minified assets to the Django static resource folders. After that, the Django app may deployed to the server.
 
-*This project was developed by Jeremy Bensman for [Family Building Blocks](http://familybuildingblocks.org) and is now maintained by [Wire Rabbit LLC](http://wirerabbit.com).*
+*This project was originally developed by Jeremy Bensman for [Family Building Blocks](http://familybuildingblocks.org). Please note that this particular repo is no longer being maintained as of July, 2018.*
